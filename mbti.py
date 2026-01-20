@@ -1,109 +1,83 @@
 import streamlit as st
-import json
-import requests
-from streamlit_lottie import st_lottie
 
-# 1. 페이지 설정
-st.set_page_config(page_title="MBTI 꿈 찾기 탐험대 🚀", page_icon="✨", layout="wide")
+# 페이지 설정
+st.set_page_config(page_title="꿈을 찾는 MBTI 여행", page_icon="🌈", layout="centered")
 
-# 2. Lottie 로드 함수 (오류 방지 로직 추가)
-def load_lottieurl(url: str):
-    try:
-        r = requests.get(url, timeout=5)
-        if r.status_code != 200:
-            return None
-        return r.json()
-    except:
-        return None
-
-# 애니메이션 소스 (우주 테마)
-lottie_main = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_fcfjwiyb.json")
-
-# 3. 화려한 CSS 스타일링
+# --- 화려한 스타일 설정 ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
-    
-    html, body, [class*="css"] {
-        font-family: 'Jua', sans-serif;
-    }
-    
+    /* 전체 배경색 및 폰트 */
     .main {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
     }
-    
-    .stSelectbox [data-baseweb="select"] {
-        border-radius: 15px;
-        border: 2px solid #FF4B4B;
-    }
-    
-    .mbti-card {
+    /* 카드 스타일 */
+    .job-card {
         background-color: white;
         padding: 30px;
-        border-radius: 25px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        border: 2px solid #FF4B4B;
+        border-radius: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         text-align: center;
-        margin-top: 20px;
-        animation: fadeIn 1.5s;
+        border: 3px solid #ff4b4b;
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+    /* 제목 스타일 */
+    .title-text {
+        font-size: 50px;
+        font-weight: bold;
+        color: #FF4B4B;
+        text-shadow: 2px 2px #ffccd5;
+        text-align: center;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 4. 상단 헤더
-st.title("🌈 MBTI 진로 탐색: 나의 꿈을 찾아라! ✨")
-col1, col2 = st.columns([2, 1])
+# --- 헤더 섹션 ---
+st.markdown('<p class="title-text">🌈 MBTI 진로 탐색기 🌈</p>', unsafe_allow_html=True)
+st.write("### 여러분의 MBTI를 선택하면 멋진 직업을 추천해드려요! ✨")
+st.markdown("---")
 
-with col1:
-    st.write("### 안녕하세요, 미래의 주인공 여러분! 👋")
-    st.write("여러분의 성격 유형을 선택하면 세상에 하나뿐인 멋진 직업을 추천해 드릴게요!")
-    st.info("이 앱은 여러분의 가능성을 응원하기 위해 만들어졌습니다. 💖")
-
-with col2:
-    if lottie_main:
-        st_lottie(lottie_main, height=200, key="main_ani")
-    else:
-        st.header("🚀")
-
-st.divider()
-
-# 5. MBTI 데이터베이스 (내용 보강)
-mbti_db = {
-    "ENFP": {"job": "🎨 크리에이티브 디렉터, 유튜버, 여행작가", "desc": "재기발랄한 활동가! 아이디어가 샘솟는 당신은 창의적인 일이 딱이에요!", "color": "#FFD700"},
-    "INTJ": {"job": "🧠 인공지능 전문가, 전략 기획자, 교수", "desc": "용의주도한 전략가! 복잡한 문제를 해결하는 지적인 도전이 어울려요!", "color": "#E6E6FA"},
-    "ESFJ": {"job": "🤝 호텔 경영자, 상담사, 초등교사", "desc": "사교적인 외교관! 조화로운 분위기를 만들며 남을 돕는 일에 천재적이에요!", "color": "#FFB6C1"},
-    "ISTP": {"job": "🛠️ 엔지니어, 데이터 분석가, 스포츠 선수", "desc": "만능 재주꾼! 도구를 다루거나 상황을 분석하는 냉철한 능력이 대단해요!", "color": "#D3D3D3"},
-    "INFP": {"job": "✍️ 작가, 예술 심리 치료사, 작곡가", "desc": "열정적인 중재자! 나만의 가치를 세상에 표현하는 감성적인 직업이 좋아요!", "color": "#E0FFE0"},
-    "ENTJ": {"job": "⚖️ CEO, 정치인, 기업 경영 컨설턴트", "desc": "대담한 통솔자! 목표를 향해 나아가며 팀을 이끄는 카리스마가 넘쳐요!", "color": "#FFFACD"}
+# --- MBTI 데이터 ---
+mbti_info = {
+    "ISTJ": {"job": "🎯 공무원, 회계사, 데이터 분석가", "desc": "신중하고 철저한 당신은 정확성이 필요한 일이 딱이야!"},
+    "ISFJ": {"job": "🏥 간호사, 선생님, 사회복지사", "desc": "친절하고 책임감 있는 당신은 남을 돕는 일에서 빛이 나!"},
+    "INFJ": {"job": "✍️ 작가, 상담 심리사, 예술가", "desc": "통찰력 있고 이상적인 당신은 사람들의 마음을 치유해!"},
+    "INTJ": {"job": "🧠 과학자, 전략 기획자, 개발자", "desc": "논리적이고 독립적인 당신은 문제를 해결하는 천재!"},
+    "ISTP": {"job": "🛠️ 엔지니어, 파일럿, 프로게이머", "desc": "도구를 잘 다루는 당신은 실용적인 기술 전문가!"},
+    "ISFP": {"job": "🎨 화가, 요리사, 디자이너", "desc": "예술적 감각이 뛰어난 당신은 세상을 아름답게 만들어!"},
+    "INFP": {"job": "📚 소설가, 작곡가, 유튜버", "desc": "상상력이 풍부한 당신은 나만의 감성을 표현하는 예술가!"},
+    "INTP": {"job": "🧪 물리학자, 철학자, 보안 전문가", "desc": "호기심 많은 당신은 깊이 있는 연구와 분석에 최고!"},
+    "ESTP": {"job": "🏃 사업가, 경찰관, 운동선수", "desc": "적응력이 뛰어나고 에너지가 넘치는 당신은 현장의 리더!"},
+    "ESFP": {"job": "🎤 연예인, 승무원, 이벤트 플래너", "desc": "사교적이고 즐거운 당신은 어디서나 분위기 메이커!"},
+    "ENFP": {"job": "🌟 광고 기획자, 파티 플래너, 작가", "desc": "열정적이고 창의적인 당신은 새로운 도전을 즐기는 탐험가!"},
+    "ENTP": {"job": "💡 발명가, 변호사, 마케팅 전문가", "desc": "아이디어가 넘치는 당신은 세상을 바꾸는 혁신가!"},
+    "ESTJ": {"job": "📊 경영자, 프로젝트 매니저, 군인", "desc": "조직적이고 체계적인 당신은 목표를 이끄는 지휘관!"},
+    "ESFJ": {"job": "🤝 홍보 전문가, 호텔리어, 초등교사", "desc": "배려심 깊고 협력적인 당신은 사람들과 함께할 때 행복해!"},
+    "ENFJ": {"job": "📢 정치인, 연설가, 사회운동가", "desc": "카리스마 있는 리더인 당신은 사람들에게 영감을 줘!"},
+    "ENTJ": {"job": "👑 CEO, 경영 컨설턴트, 판사", "desc": "결단력 있고 통솔력이 강한 당신은 미래를 이끄는 리더!"}
 }
 
-# 6. 사용자 입력 및 결과 출력
-st.markdown("### 👇 여러분의 MBTI 유형은 무엇인가요?")
-choice = st.selectbox("리스트에서 선택하세요", list(mbti_db.keys()))
+# --- 사용자 입력 ---
+selected_mbti = st.selectbox("나의 MBTI 유형은 무엇인가요? 👇", list(mbti_info.keys()))
 
-if st.button("✨ 내 미래 직업 확인하기 ✨"):
-    # 효과음 대신 시각 효과
+# --- 결과 출력 버튼 ---
+if st.button("💖 나의 추천 직업 확인하기 💖"):
+    # 축하 효과
     st.balloons()
     
-    data = mbti_db[choice]
+    # 결과 정보 가져오기
+    res = mbti_info[selected_mbti]
     
+    # 카드 형식으로 출력
     st.markdown(f"""
-        <div class="mbti-card">
-            <h1 style='color: #FF4B4B;'>{choice}</h1>
-            <h3>"{data['desc']}"</h3>
-            <hr style='border: 0.5px solid #eee;'>
-            <h2 style='color: #1E90FF;'>💎 추천 직업 💎</h2>
-            <p style='font-size: 28px; font-weight: bold;'>{data['job']}</p>
+        <div class="job-card">
+            <h1 style='font-size: 60px;'>{selected_mbti}</h1>
+            <p style='font-size: 20px; color: #666;'>{res['desc']}</p>
+            <hr>
+            <h2 style='color: #FF4B4B;'>💎 추천 직업 💎</h2>
+            <p style='font-size: 28px; font-weight: bold;'>{res['job']}</p>
         </div>
     """, unsafe_allow_html=True)
     
-    st.success(f"항상 여러분의 꿈을 응원합니다! {choice} 파이팅! 🔥")
+    st.info(f"항상 {selected_mbti}인 여러분의 꿈을 응원해요! 화이팅! 🔥")
 
-# 하단 푸터
-st.markdown("---")
-st.caption("© 2024 진로 교육 프로젝트 | Streamlit & Github 로 제작됨 ✨")
+# --- 푸터 ---
+st.markdown("<br><br><p style='text-align: center; color: #888;'>© 2026 Dream MBTI Project ✨</p>", unsafe_allow_html=True)
